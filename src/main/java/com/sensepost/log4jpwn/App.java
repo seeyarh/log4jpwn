@@ -2,10 +2,23 @@ package com.sensepost.log4jpwn;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import com.google.gson.Gson;
+
 
 import static spark.Spark.*;
 
+
 public class App {
+    public class User {
+    private String id;
+    // constructors, getters and setters
+    }
+
+    public interface UserService {
+
+        public void addUser (User user);
+    }
+
     static final Logger logger = LogManager.getLogger(App.class.getName());
 
     public static void main(String[] args) {
@@ -29,5 +42,20 @@ public class App {
 
             return "ok: ua: " + ua + " " + "pwn: " + pwn + " pth:" + pth;
         });
+
+        post("/json", (request, response) -> {
+            User user = new Gson().fromJson(request.body(), User.class);
+
+            logger.error(user.id);
+
+            return "ok";
+        });
+
+        post("/form", (request, response) -> {
+            String id = request.queryParams("id");
+            logger.error(id);
+            return "ok";
+        });
+
     }
 }
